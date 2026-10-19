@@ -1,0 +1,1859 @@
+/* ==========================================
+   AGENDAWEB
+   ESTILOS PRINCIPALES
+========================================== */
+
+:root {
+
+    --fondo: #fce8e2;
+
+    --blanco: #ffffff;
+
+    --texto: #18324b;
+
+    --texto-suave: #647b91;
+
+    --primario: #0d9488;
+
+    --primario-oscuro: #087a72;
+
+    --borde: #dfe8ef;
+
+    --rojo: #ef4444;
+
+    --rojo-suave: #fff1f1;
+
+    --trabajo: #14aaa4;
+
+    --ocio: #8749d8;
+
+    --estudio: #f0b82e;
+
+    --personal: #2784e8;
+
+    --sombra:
+        0 5px 20px rgba(30, 70, 100, 0.08);
+
+    --fuente:
+        'Inter',
+        sans-serif;
+
+    --titulo:
+        'Plus Jakarta Sans',
+        sans-serif;
+}
+
+
+/* ==========================================
+   GENERAL
+========================================== */
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+
+body {
+
+    margin: 0;
+
+    background: var(--fondo);
+
+    color: var(--texto);
+
+    font-family: var(--fuente);
+
+    line-height: 1.5;
+
+}
+
+
+a {
+
+    text-decoration: none;
+
+    color: inherit;
+
+}
+
+
+button,
+input,
+select,
+textarea {
+
+    font-family: var(--fuente);
+
+}
+
+
+/* ==========================================
+   BARRA SUPERIOR
+========================================== */
+
+.barra-superior {
+
+    height: 78px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #087c78,
+            #109b96
+        );
+
+    color: white;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.08);
+
+}
+
+
+.barra-contenido {
+
+    max-width: 1440px;
+
+    height: 100%;
+
+    margin: auto;
+
+    padding: 0 45px;
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-family: var(--titulo);
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    color: white;
+
+}
+
+
+.logo > span:last-child > span {
+
+    color: #47d9cf;
+
+}
+
+
+.logo-icono {
+
+    width: 50px;
+
+    height: 50px;
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,0.18);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 25px;
+
+}
+
+
+.navegacion {
+
+    display: flex;
+
+    align-self: stretch;
+
+    margin-left: 70px;
+
+    gap: 35px;
+
+}
+
+
+.navegacion a {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: rgba(255,255,255,0.85);
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    position: relative;
+
+}
+
+
+.navegacion a:hover {
+
+    color: white;
+
+}
+
+
+.navegacion .nav-activo {
+
+    color: white;
+
+}
+
+
+.navegacion .nav-activo::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: 12px;
+
+    left: 0;
+
+    right: 0;
+
+    height: 3px;
+
+    border-radius: 5px;
+
+    background: white;
+
+}
+
+
+.usuario-icono {
+
+    margin-left: auto;
+
+    width: 38px;
+
+    height: 38px;
+
+    border: 2px solid white;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+}
+
+
+/* ==========================================
+   CONTENEDOR
+========================================== */
+
+.contenedor {
+
+    max-width: 1440px;
+
+    margin: auto;
+
+    padding: 30px 45px 50px;
+
+}
+
+
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+.encabezado-pagina {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 22px;
+
+}
+
+
+.encabezado-pagina h1 {
+
+    margin: 0 0 3px;
+
+    font-family: var(--titulo);
+
+    font-size: 34px;
+
+    font-weight: 800;
+
+    color: #19344d;
+
+}
+
+
+.encabezado-pagina p {
+
+    margin: 0;
+
+    color: var(--texto-suave);
+
+    font-size: 16px;
+
+}
+
+
+/* ==========================================
+   BOTÓN NUEVO
+========================================== */
+
+.btn-nuevo {
+
+    border: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d9488,
+            #0baaa1
+        );
+
+    color: white;
+
+    border-radius: 9px;
+
+    padding: 13px 22px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 12px rgba(13,148,136,0.2);
+
+    transition: 0.2s;
+
+}
+
+
+.btn-nuevo:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #087a72,
+            #0d9488
+        );
+
+    transform: translateY(-1px);
+
+}
+
+
+/* ==========================================
+   BOTÓN SECUNDARIO
+========================================== */
+
+.btn-secundario {
+
+    color: var(--primario);
+
+    font-weight: 700;
+
+    font-size: 14px;
+
+}
+
+
+.btn-secundario:hover {
+
+    color: var(--primario-oscuro);
+
+}
+
+
+/* ==========================================
+   TARJETAS
+========================================== */
+
+.tarjeta {
+
+    background: white;
+
+    border-radius: 13px;
+
+    box-shadow: var(--sombra);
+
+    border: 1px solid #edf2f6;
+
+}
+
+
+/* ==========================================
+   CALENDARIO
+========================================== */
+
+.calendario {
+
+    padding: 18px 16px 15px;
+
+    margin-bottom: 22px;
+
+}
+
+
+.calendario-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 3px 17px;
+
+}
+
+
+.titulo-calendario {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.titulo-calendario h2 {
+
+    margin: 0;
+
+    font-family: var(--titulo);
+
+    font-size: 20px;
+
+}
+
+
+.icono-calendario {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 9px;
+
+    background: #edfafa;
+
+    color: var(--primario);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 19px;
+
+}
+
+
+.controles-mes {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.flecha {
+
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #f4f8fb;
+
+    color: #47627a;
+
+    font-size: 25px;
+
+}
+
+
+.flecha:hover {
+
+    background: #e7f7f6;
+
+    color: var(--primario);
+
+}
+
+
+/* ==========================================
+   DÍAS DE SEMANA
+========================================== */
+
+.dias-semana {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    border: 1px solid var(--borde);
+
+    border-bottom: none;
+
+    border-radius: 9px 9px 0 0;
+
+    overflow: hidden;
+
+}
+
+
+.dias-semana div {
+
+    background: #f5f9fc;
+
+    color: #4e6780;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    padding: 8px;
+
+    border-right: 1px solid var(--borde);
+
+}
+
+
+.dias-semana div:last-child {
+
+    border-right: none;
+
+}
+
+
+/* ==========================================
+   CELDAS DEL CALENDARIO
+========================================== */
+
+.dias-calendario {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    border-left: 1px solid var(--borde);
+
+    border-top: 1px solid var(--borde);
+
+}
+
+
+.dia {
+
+    min-height: 78px;
+
+    padding: 9px 10px;
+
+    border-right: 1px solid var(--borde);
+
+    border-bottom: 1px solid var(--borde);
+
+    position: relative;
+
+    background: white;
+
+}
+
+
+.dia:hover {
+
+    background: #f8fcfd;
+
+}
+
+
+.dia.dia-evento.categoria-trabajo,
+.dia.dia-evento.categoria-trabajo:hover {
+
+    background: #e5f7f4;
+
+}
+
+
+.dia.dia-evento.categoria-ocio,
+.dia.dia-evento.categoria-ocio:hover {
+
+    background: #f2eafb;
+
+}
+
+
+.dia.dia-evento.categoria-estudio,
+.dia.dia-evento.categoria-estudio:hover {
+
+    background: #fff6d8;
+
+}
+
+
+.dia.dia-evento.categoria-personal,
+.dia.dia-evento.categoria-personal:hover {
+
+    background: #e8f2ff;
+
+}
+
+
+.calendario-vacio {
+
+    background: #fbfcfd;
+
+}
+
+
+.numero-dia {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+.dia-hoy .numero-dia {
+
+    display: inline-flex;
+
+    width: 26px;
+
+    height: 26px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--primario);
+
+    color: white;
+
+}
+
+
+.eventos-dia {
+
+    display: grid;
+
+    gap: 5px;
+
+    margin-top: 8px;
+
+}
+
+
+.evento-dia {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    min-width: 0;
+
+    color: var(--texto);
+
+    font-size: 11px;
+
+    line-height: 1.3;
+
+}
+
+
+.evento-dia:hover .evento-dia-titulo {
+
+    text-decoration: underline;
+
+}
+
+
+.evento-dia-titulo {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.eventos-dia-mas {
+
+    color: var(--texto-suave);
+
+    font-size: 10px;
+
+}
+
+
+.punto {
+
+    display: inline-block;
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+}
+
+
+.punto.categoria-trabajo {
+
+    background: var(--trabajo);
+
+}
+
+
+.punto.categoria-ocio {
+
+    background: var(--ocio);
+
+}
+
+
+.punto.categoria-estudio {
+
+    background: var(--estudio);
+
+}
+
+
+.punto.categoria-personal {
+
+    background: var(--personal);
+
+}
+
+
+/* ==========================================
+   LEYENDA
+========================================== */
+
+.leyenda {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 18px;
+
+    padding: 12px 5px 0;
+
+    font-size: 12px;
+
+    color: var(--texto-suave);
+
+}
+
+
+.leyenda span {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+}
+
+
+/* ==========================================
+   LISTA
+========================================== */
+
+.lista-eventos {
+
+    padding: 20px;
+
+}
+
+
+.lista-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 15px;
+
+}
+
+
+.lista-header h2 {
+
+    margin: 0;
+
+    font-family: var(--titulo);
+
+    font-size: 19px;
+
+}
+
+
+.contador-eventos {
+
+    color: var(--texto-suave);
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================
+   TABLA
+========================================== */
+
+.tabla-responsive {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+.tabla-eventos {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+}
+
+
+.tabla-eventos th {
+
+    background: #f4f8fb;
+
+    color: #526a82;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-align: left;
+
+    padding: 11px 14px;
+
+    border-bottom: 1px solid var(--borde);
+
+}
+
+
+.tabla-eventos td {
+
+    padding: 11px 14px;
+
+    border-bottom: 1px solid #e9eef2;
+
+    color: #4d6680;
+
+    font-size: 12px;
+
+}
+
+
+.tabla-eventos tr:last-child td {
+
+    border-bottom: none;
+
+}
+
+
+.tabla-eventos tr:hover td {
+
+    background: #fbfdfe;
+
+}
+
+
+/* ==========================================
+   TÍTULO DEL EVENTO
+========================================== */
+
+.titulo-evento {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 220px;
+
+}
+
+
+.nombre-evento {
+
+    color: #19344d;
+
+    font-weight: 700;
+
+}
+
+
+.nombre-evento:hover {
+
+    color: var(--primario);
+
+}
+
+
+/* ==========================================
+   ETIQUETAS
+========================================== */
+
+.etiqueta {
+
+    min-width: 65px;
+
+    text-align: center;
+
+    padding: 4px 9px;
+
+    border-radius: 20px;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.etiqueta.categoria-trabajo {
+
+    background: var(--trabajo);
+
+}
+
+
+.etiqueta.categoria-ocio {
+
+    background: var(--ocio);
+
+}
+
+
+.etiqueta.categoria-estudio {
+
+    background: var(--estudio);
+
+}
+
+
+.etiqueta.categoria-personal {
+
+    background: var(--personal);
+
+}
+
+
+.etiqueta.grande {
+
+    display: inline-block;
+
+    padding: 7px 15px;
+
+    font-size: 13px;
+
+    margin-bottom: 10px;
+
+}
+
+
+/* ==========================================
+   ACCIONES
+========================================== */
+
+.acciones {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.acciones form {
+
+    margin: 0;
+
+}
+
+
+.btn-editar,
+.btn-eliminar {
+
+    background: white;
+
+    border-radius: 7px;
+
+    padding: 7px 12px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+
+.btn-editar {
+
+    color: var(--primario);
+
+    border: 1px solid var(--primario);
+
+}
+
+
+.btn-editar:hover {
+
+    background: #edfafa;
+
+}
+
+
+.btn-eliminar {
+
+    color: var(--rojo);
+
+    border: 1px solid #ff8c8c;
+
+}
+
+
+.btn-eliminar:hover {
+
+    background: var(--rojo-suave);
+
+}
+
+
+/* ==========================================
+   FORMULARIO
+========================================== */
+
+.formulario {
+
+    max-width: 760px;
+
+    margin: auto;
+
+    padding: 30px;
+
+}
+
+
+#contenedor-principal {
+
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 36px 24px 52px;
+
+}
+
+
+.encabezado-inicio {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 24px;
+
+}
+
+
+.encabezado-inicio h1 {
+
+    margin: 0 0 5px;
+
+    font-family: var(--titulo);
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+}
+
+
+.subtitulo,
+.texto-secundario {
+
+    margin: 0;
+
+    color: var(--texto-suave);
+
+}
+
+
+.encabezado-inicio .subtitulo {
+
+    color: var(--texto);
+
+    font-weight: 600;
+
+}
+
+
+.formulario h2 {
+
+    margin: 0 0 8px;
+
+    font-family: var(--titulo);
+
+}
+
+
+.formulario > .texto-secundario {
+
+    margin-bottom: 24px;
+
+}
+
+
+.form-group {
+
+    margin-bottom: 19px;
+
+}
+
+
+.form-label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.form-input,
+.form-select {
+
+    display: block;
+
+    width: 100%;
+
+    min-height: 44px;
+
+    padding: 10px 13px;
+
+    border: 1px solid var(--borde);
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--texto);
+
+    font-size: 14px;
+
+    outline: none;
+
+}
+
+
+.form-input:focus,
+.form-select:focus {
+
+    border-color: var(--primario);
+
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.10);
+
+}
+
+
+.form-input.is-invalid,
+.form-select.is-invalid {
+
+    border-color: var(--rojo);
+
+}
+
+
+.form-error {
+
+    margin: 6px 0 0;
+
+    color: var(--rojo);
+
+    font-size: 13px;
+
+}
+
+
+.btn-primary {
+
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 12px 20px;
+
+    background: linear-gradient(135deg, #0d9488, #0baaa1);
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: 0 5px 12px rgba(13, 148, 136, 0.2);
+
+    transition: 0.2s;
+
+}
+
+
+.btn-primary:hover {
+
+    background: linear-gradient(135deg, #087a72, #0d9488);
+
+    transform: translateY(-1px);
+
+}
+
+
+.alert--error {
+
+    margin-bottom: 20px;
+
+    padding: 12px 16px;
+
+    border: 1px solid #fecaca;
+
+    border-radius: 8px;
+
+    background: var(--rojo-suave);
+
+    color: #b91c1c;
+
+}
+
+
+.campo {
+
+    margin-bottom: 19px;
+
+}
+
+
+.campo label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.campo input,
+.campo select,
+.campo textarea {
+
+    width: 100%;
+
+    padding: 12px 13px;
+
+    border: 1px solid var(--borde);
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--texto);
+
+    font-size: 14px;
+
+    outline: none;
+
+}
+
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+
+    border-color: var(--primario);
+
+    box-shadow:
+        0 0 0 3px rgba(13,148,136,0.10);
+
+}
+
+
+.campo textarea {
+
+    resize: vertical;
+
+}
+
+
+#contenedor-principal {
+
+    padding: 24px 16px 36px;
+
+}
+
+.encabezado-inicio {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+}
+
+.formulario {
+
+    padding: 22px;
+
+}
+
+.fila-formulario {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 18px;
+
+}
+
+
+.botones-formulario {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 25px;
+
+}
+
+
+.btn-cancelar {
+
+    padding: 12px 18px;
+
+    border: 1px solid var(--borde);
+
+    border-radius: 8px;
+
+    color: var(--texto-suave);
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.btn-cancelar:hover {
+
+    background: #f5f8fa;
+
+}
+
+
+/* ==========================================
+   MENSAJES
+========================================== */
+
+.mensaje-error {
+
+    background: #fff1f1;
+
+    border: 1px solid #ffcaca;
+
+    color: #c62828;
+
+    padding: 12px 15px;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================
+   SIN EVENTOS
+========================================== */
+
+.sin-eventos {
+
+    text-align: center;
+
+    padding: 55px 20px;
+
+}
+
+
+.sin-eventos-icono {
+
+    width: 55px;
+
+    height: 55px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    background: #eaf8f7;
+
+    color: var(--primario);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+}
+
+
+.sin-eventos h3 {
+
+    margin: 15px 0 5px;
+
+    font-family: var(--titulo);
+
+}
+
+
+.sin-eventos p {
+
+    color: var(--texto-suave);
+
+    margin-bottom: 20px;
+
+}
+
+
+/* ==========================================
+   DETALLE DEL EVENTO
+========================================== */
+
+.detalle-evento {
+
+    padding: 35px;
+
+}
+
+
+.detalle-evento h2 {
+
+    font-family: var(--titulo);
+
+    font-size: 28px;
+
+    margin: 5px 0 30px;
+
+}
+
+
+.detalle-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+    padding: 20px 0;
+
+    border-top: 1px solid var(--borde);
+
+    border-bottom: 1px solid var(--borde);
+
+}
+
+
+.detalle-grid div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+
+.detalle-grid strong,
+.descripcion-evento strong {
+
+    font-size: 12px;
+
+    color: var(--texto-suave);
+
+}
+
+
+.detalle-grid span {
+
+    font-weight: 600;
+
+}
+
+
+.descripcion-evento {
+
+    padding: 25px 0;
+
+}
+
+
+.descripcion-evento p {
+
+    color: #526a82;
+
+    line-height: 1.7;
+
+}
+
+
+.acciones-detalle {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+/* ==========================================
+   PIE
+========================================== */
+
+.pie {
+
+    text-align: center;
+
+    color: var(--texto-suave);
+
+    font-size: 12px;
+
+    padding: 20px;
+
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 900px) {
+
+
+    .barra-contenido {
+
+        padding: 0 20px;
+
+    }
+
+
+    .navegacion {
+
+        margin-left: 25px;
+
+        gap: 15px;
+
+    }
+
+
+    .contenedor {
+
+        padding: 25px 20px;
+
+    }
+
+
+    .dia {
+
+        min-height: 65px;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+
+    .barra-superior {
+
+        height: auto;
+
+    }
+
+
+    .barra-contenido {
+
+        padding: 12px 15px;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+    }
+
+
+    .logo {
+
+        font-size: 21px;
+
+    }
+
+
+    .logo-icono {
+
+        width: 40px;
+
+        height: 40px;
+
+    }
+
+
+    .navegacion {
+
+        order: 3;
+
+        width: 100%;
+
+        margin: 0;
+
+        height: 40px;
+
+    }
+
+
+    .navegacion a {
+
+        font-size: 12px;
+
+    }
+
+
+    .usuario-icono {
+
+        display: none;
+
+    }
+
+
+    .encabezado-pagina {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
+
+    }
+
+
+    .encabezado-pagina h1 {
+
+        font-size: 27px;
+
+    }
+
+
+    .btn-nuevo {
+
+        width: 100%;
+
+    }
+
+
+    .calendario {
+
+        padding: 10px;
+
+    }
+
+
+    .calendario-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+    }
+
+
+    .controles-mes {
+
+        width: 100%;
+
+        justify-content: space-between;
+
+    }
+
+
+    .dias-semana div {
+
+        font-size: 10px;
+
+    }
+
+
+    .dia {
+
+        min-height: 55px;
+
+        padding: 5px;
+
+    }
+
+
+    .numero-dia {
+
+        font-size: 11px;
+
+    }
+
+
+    .leyenda {
+
+        justify-content: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .fila-formulario {
+
+        grid-template-columns: 1fr;
+
+        gap: 0;
+
+    }
+
+
+    .detalle-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .acciones-detalle {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+}
