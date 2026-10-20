@@ -1,0 +1,14 @@
+<?php
+
+if (!defined('AGENDAWEB_CONNECTION')) {
+    http_response_code(404);
+    exit;
+}
+
+return [
+    'host' => 'localhost',
+    'port' => '3306',
+    'database' => 'agendagerawweb_db',
+    'username' => 'agendagerawweb',
+    'password' => 'CAMBIA_POR_TU_CONTRASENA_MYSQL',
+];

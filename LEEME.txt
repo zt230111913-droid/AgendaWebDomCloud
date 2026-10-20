@@ -15,13 +15,19 @@ Archivos:
   .gitignore ........... recuerda no guardar contraseñas en el repositorio
 
 En XAMPP, conexion.php usa por defecto MySQL en localhost:3306, base agendaweb,
-usuario root y contraseña vacía. Para bases existentes, respalda la base e
-importa migracion_p5.sql una sola vez en phpMyAdmin. El script conserva una
-copia de eventos en eventos_respaldo antes de cambiar su estructura.
+usuario root y contraseña vacía. Para usar otra configuración, crea
+conexion.local.php a partir de conexion.local.php.example. Ese archivo está
+excluido de Git y no debes subirlo ni compartir su contraseña.
 
-En DOM Cloud configura DB_HOST, DB_PORT, DB_NAME, DB_USER y DB_PASSWORD con
-los valores del panel. Importa migracion_p5.sql una sola vez en la base del
-alojamiento; cambia su sentencia USE si el nombre de esa base no es agendaweb.
+Para bases existentes, respalda la base e importa migracion_p5.sql una sola
+vez en phpMyAdmin. El script conserva una copia de eventos en eventos_respaldo
+antes de cambiar su estructura.
+
+En DOM Cloud crea conexion.local.php en el editor del alojamiento con los
+datos de MySQL del panel; no pegues la contraseña en conexion.php ni en GitHub.
+La base nueva se crea con db.sql; migracion_p5.sql es solo para migrar una
+tabla eventos existente. Si usas esa migración en otro servidor, ajusta su
+sentencia USE al nombre real de la base.
 La página principal lista eventos con JOIN y muestra el resumen por categoría
 con GROUP BY. Los formularios de registro y edición leen categorías de MySQL.
 

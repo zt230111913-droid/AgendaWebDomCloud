@@ -1,2 +1,2 @@
-# conexion.php solo lee las credenciales de variables de entorno; no guardes
-# contrasenas en este archivo ni en el repositorio.
+# Credenciales locales o del alojamiento: nunca subirlas a GitHub.
+conexion.local.php
