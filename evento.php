@@ -13,9 +13,10 @@ if ($id <= 0) {
     exit;
 }
 $stmt = $pdo->prepare("
-    SELECT *
-    FROM eventos
-    WHERE id = :id
+    SELECT e.*, c.nombre AS categoria
+    FROM eventos AS e
+    JOIN categorias AS c ON c.id = e.categoria_id
+    WHERE e.id = :id
 ");
 
 
@@ -36,16 +37,16 @@ if (!$evento) {
 
 function claseCategoriaEvento($categoria)
 {
+    switch (strtolower(trim($categoria))) {
 
-    switch ($categoria) {
-
-        case 'Trabajo':
+        case 'trabajo':
             return 'categoria-trabajo';
 
-        case 'Ocio':
+        case 'ocio':
+        case 'ocio / deporte':
             return 'categoria-ocio';
 
-        case 'Estudio':
+        case 'estudio':
             return 'categoria-estudio';
 
         default:

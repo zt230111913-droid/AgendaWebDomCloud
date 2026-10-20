@@ -2,6 +2,10 @@
 
 require_once "conexion.php";
 
+$categorias = $pdo->query(
+    'SELECT id, nombre FROM categorias ORDER BY nombre'
+)->fetchAll();
+$nombresCategorias = array_column($categorias, 'nombre', 'id');
 
 $id = isset($_GET['id'])
     ? (int) $_GET['id']
@@ -21,9 +25,10 @@ if ($id <= 0) {
  */
 
 $stmt = $pdo->prepare("
-    SELECT *
-    FROM eventos
-    WHERE id = :id
+    SELECT e.*, c.nombre AS categoria
+    FROM eventos AS e
+    JOIN categorias AS c ON c.id = e.categoria_id
+    WHERE e.id = :id
 ");
 
 $stmt->execute([
@@ -69,13 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hora = $_POST['hora'] ?? '';
 
 
-    $categoria = $_POST['categoria'] ?? 'Personal';
+    $categoriaId = trim($_POST['categoria_id'] ?? '');
 
 
     $descripcion = trim(
         $_POST['descripcion'] ?? ''
     );
 
+
+    $categoriasPermitidas = array_map('strval', array_column($categorias, 'id'));
 
     if (
         empty($titulo) ||
@@ -85,6 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error =
             "El título y la fecha son obligatorios.";
 
+    } elseif (
+        !ctype_digit($categoriaId) ||
+        !in_array($categoriaId, $categoriasPermitidas, true)
+    ) {
+        $error = "Elige una categoría válida.";
     } else {
 
 
@@ -96,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ubicacion = :ubicacion,
                 fecha = :fecha,
                 hora = :hora,
-                categoria = :categoria,
+                categoria_id = :categoria_id,
                 descripcion = :descripcion
 
             WHERE id = :id
@@ -115,10 +127,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $fecha,
 
             ':hora' =>
-                $hora,
+                $hora !== '' ? $hora : null,
 
-            ':categoria' =>
-                $categoria,
+            ':categoria_id' =>
+                (int) $categoriaId,
 
             ':descripcion' =>
                 $descripcion,
@@ -145,7 +157,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $evento['ubicacion'] = $ubicacion;
     $evento['fecha'] = $fecha;
     $evento['hora'] = $hora;
-    $evento['categoria'] = $categoria;
+    $evento['categoria_id'] = $categoriaId;
+    if (isset($nombresCategorias[(int) $categoriaId])) {
+        $evento['categoria'] = $nombresCategorias[(int) $categoriaId];
+    }
     $evento['descripcion'] = $descripcion;
 }
 
@@ -324,37 +339,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <select
                     id="categoria"
-                    name="categoria"
+                    name="categoria_id"
                 >
-
-                    <option
-                        value="trabajo"
-                        <?php echo strtolower($evento['categoria']) === 'trabajo' ? 'selected' : ''; ?>
-                    >
-                        Trabajo
-                    </option>
-
-                    <option
-                        value="ocio"
-                        <?php echo strtolower($evento['categoria']) === 'ocio' ? 'selected' : ''; ?>
-                    >
-                        Ocio
-                    </option>
-
-                    <option
-                        value="estudio"
-                        <?php echo strtolower($evento['categoria']) === 'estudio' ? 'selected' : ''; ?>
-                    >
-                        Estudio
-                    </option>
-
-                    <option
-                        value="personal"
-                        <?php echo strtolower($evento['categoria']) === 'personal' ? 'selected' : ''; ?>
-                    >
-                        Personal
-                    </option>
-
+                    <?php foreach ($categorias as $categoria): ?>
+                        <option
+                            value="<?php echo (int) $categoria['id']; ?>"
+                            <?php echo (int) $evento['categoria_id'] === (int) $categoria['id'] ? 'selected' : ''; ?>
+                        >
+                            <?php echo htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8'); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
 
             </div>

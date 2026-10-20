@@ -8,10 +8,22 @@ Se abre en:           http://localhost:8000/registrar.php
 Archivos:
   registrar.php ........ formulario + procesamiento (TU trabajo: los TODO)
   index.php ............ página principal (ya está completa)
-  conexion.ejemplo.php . plantilla de conexión (cópiala como conexion.php)
-  db.sql ............... crea la base "agenda" y la tabla "eventos"
+  conexion.php ......... conexión PDO a MySQL, configurada por variables de entorno
+  db.sql ............... crea el esquema normalizado para una base nueva
+  migracion_p5.sql ..... migra eventos existentes a categorias y categoria_id
   css/estilos.css ...... estilos listos: tú solo cambias el bloque MARCA
-  .gitignore ........... evita subir conexion.php a GitHub
+  .gitignore ........... recuerda no guardar contraseñas en el repositorio
+
+En XAMPP, conexion.php usa por defecto MySQL en localhost:3306, base agendaweb,
+usuario root y contraseña vacía. Para bases existentes, respalda la base e
+importa migracion_p5.sql una sola vez en phpMyAdmin. El script conserva una
+copia de eventos en eventos_respaldo antes de cambiar su estructura.
+
+En DOM Cloud configura DB_HOST, DB_PORT, DB_NAME, DB_USER y DB_PASSWORD con
+los valores del panel. Importa migracion_p5.sql una sola vez en la base del
+alojamiento; cambia su sentencia USE si el nombre de esa base no es agendaweb.
+La página principal lista eventos con JOIN y muestra el resumen por categoría
+con GROUP BY. Los formularios de registro y edición leen categorías de MySQL.
 
 Sigue la guía de rescate paso a paso. Cada TODO dice en qué paso se completa.
 

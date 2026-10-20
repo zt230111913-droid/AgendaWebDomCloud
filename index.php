@@ -94,14 +94,23 @@ $espaciosIniciales = $diaSemana - 1;
  * Obtener eventos
  */
 $stmt = $pdo->query("
-    SELECT *
-    FROM eventos
-    ORDER BY fecha ASC, hora ASC
+    SELECT e.*, c.nombre AS categoria
+    FROM eventos AS e
+    JOIN categorias AS c ON c.id = e.categoria_id
+    ORDER BY e.fecha ASC, e.hora ASC
 ");
 
 $eventos = $stmt->fetchAll(
     PDO::FETCH_ASSOC
 );
+
+$resumenCategorias = $pdo->query("
+    SELECT c.id, c.nombre, COUNT(e.id) AS total
+    FROM categorias AS c
+    LEFT JOIN eventos AS e ON e.categoria_id = c.id
+    GROUP BY c.id, c.nombre
+    ORDER BY c.nombre
+")->fetchAll();
 
 
 /*
@@ -150,19 +159,6 @@ function e(?string $texto): string
 }
 
 
-function nombreCategoria(string $clave): string
-{
-    $nombres = [
-        'trabajo' => 'Trabajo',
-        'personal' => 'Personal',
-        'estudio' => 'Estudio',
-        'ocio' => 'Ocio / Deporte',
-    ];
-
-    return $nombres[strtolower($clave)] ?? $clave;
-}
-
-
 function claseCategoria($categoria)
 {
 
@@ -172,6 +168,7 @@ function claseCategoria($categoria)
             return 'categoria-trabajo';
 
         case 'ocio':
+        case 'ocio / deporte':
             return 'categoria-ocio';
 
         case 'estudio':
@@ -209,7 +206,7 @@ function mostrarEvento(array $ev): string
     $html = '<tr>';
     $html .= '<td><div class="titulo-evento">';
     $html .= '<span class="etiqueta ' . claseCategoria($categoria) . '">'
-        . e(nombreCategoria($categoria)) . '</span>';
+        . e($categoria) . '</span>';
     $html .= '<a href="evento.php?id=' . $id . '" class="nombre-evento">'
         . e($ev['titulo'] ?? '') . '</a>';
     $html .= '</div></td>';
@@ -369,6 +366,17 @@ function mostrarEvento(array $ev): string
 
     </section>
 
+    <div class="resumen-categorias" aria-label="Resumen de eventos por categoría">
+        <h2>Eventos por categoría</h2>
+        <div class="resumen-categorias-lista">
+            <?php foreach ($resumenCategorias as $resumen): ?>
+                <div class="resumen-categoria">
+                    <span><?= e($resumen['nombre']) ?></span>
+                    <strong><?= (int) $resumen['total'] ?></strong>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <!-- =================================
          CALENDARIO
@@ -624,8 +632,6 @@ function mostrarEvento(array $ev): string
     ================================= -->
 
     <section class="tarjeta lista-eventos">
-
-
         <div class="lista-header">
 
             <div>

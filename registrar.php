@@ -6,10 +6,16 @@ function e(string $texto): string
     return htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
 }
 
+require_once __DIR__ . '/conexion.php';
+
+$categorias = $pdo->query(
+    'SELECT id, nombre FROM categorias ORDER BY nombre'
+)->fetchAll();
+
 // Valores iniciales y errores de cada campo.
 $titulo = '';
 $fecha = '';
-$categoria = '';
+$categoriaId = '';
 $ubicacion = '';
 $hora = '';
 $errores = [];
@@ -18,7 +24,7 @@ $errores = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = trim($_POST['titulo'] ?? '');
     $fecha = trim($_POST['fecha'] ?? '');
-    $categoria = trim($_POST['categoria'] ?? '');
+    $categoriaId = trim($_POST['categoria_id'] ?? '');
     $ubicacion = trim($_POST['ubicacion'] ?? '');
     $hora = trim($_POST['hora'] ?? '');
 
@@ -38,33 +44,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $categoriasPermitidas = ['trabajo', 'personal', 'estudio', 'ocio'];
-    if (!in_array($categoria, $categoriasPermitidas, true)) {
+    $categoriasPermitidas = array_map('strval', array_column($categorias, 'id'));
+    if (!ctype_digit($categoriaId) || !in_array($categoriaId, $categoriasPermitidas, true)) {
         $errores['categoria'] = 'Elige una categoría válida.';
     }
 
     // Guarda el evento solo si todos los campos son válidos.
-    // TODO Paso 8 · Guardar en MySQL
     if ($errores === []) {
         try {
-            require_once __DIR__ . '/conexion.php';
-
             $consulta = $pdo->prepare(
-                'INSERT INTO eventos (titulo, ubicacion, fecha, hora, categoria)
-                VALUES (:titulo, :ubicacion, :fecha, :hora, :categoria)'
+                'INSERT INTO eventos (titulo, ubicacion, fecha, hora, categoria_id)
+                VALUES (:titulo, :ubicacion, :fecha, :hora, :categoria_id)'
             );
             $consulta->execute([
                 ':titulo' => $titulo,
                 ':ubicacion' => $ubicacion,
                 ':fecha' => $fecha,
-                ':hora' => $hora,
-                ':categoria' => $categoria,
+                ':hora' => $hora !== '' ? $hora : null,
+                ':categoria_id' => (int) $categoriaId,
             ]);
             $consulta->closeCursor();
 
             header('Location: index.php?ok=1');
             exit;
         } catch (PDOException $e) {
+            error_log('No se pudo guardar el evento: ' . $e->getMessage());
             $errores['general'] = 'No se pudo guardar.';
         }
     }
@@ -189,12 +193,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label class="form-label" for="categoria">Categoría</label>
-                <select name="categoria" id="categoria" class="form-select<?= isset($errores['categoria']) ? ' is-invalid' : '' ?>" required>
-                    <option value=""<?= $categoria === '' ? ' selected' : '' ?>>— Elige una —</option>
-                    <option value="trabajo"<?= $categoria === 'trabajo' ? ' selected' : '' ?>>Trabajo</option>
-                    <option value="personal"<?= $categoria === 'personal' ? ' selected' : '' ?>>Personal</option>
-                    <option value="estudio"<?= $categoria === 'estudio' ? ' selected' : '' ?>>Estudio</option>
-                    <option value="ocio"<?= $categoria === 'ocio' ? ' selected' : '' ?>>Ocio / Deporte</option>
+                <select name="categoria_id" id="categoria" class="form-select<?= isset($errores['categoria']) ? ' is-invalid' : '' ?>" required>
+                    <option value=""<?= $categoriaId === '' ? ' selected' : '' ?>>— Elige una —</option>
+                    <?php foreach ($categorias as $categoria): ?>
+                        <option value="<?= (int) $categoria['id'] ?>"<?= $categoriaId === (string) $categoria['id'] ? ' selected' : '' ?>>
+                            <?= e($categoria['nombre']) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <?php if (isset($errores['categoria'])): ?>
                     <p class="form-error"><?= e($errores['categoria']) ?></p>

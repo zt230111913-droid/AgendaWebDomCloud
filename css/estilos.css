@@ -837,6 +837,72 @@ textarea {
 
 }
 
+.resumen-categorias {
+
+    margin-bottom: 22px;
+
+    padding: 16px;
+
+    border: 1px solid var(--borde);
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+}
+
+.resumen-categorias h2 {
+
+    margin: 0 0 12px;
+
+    font-family: var(--titulo);
+
+    font-size: 16px;
+
+}
+
+.resumen-categorias-lista {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+}
+
+.resumen-categoria {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    min-width: 150px;
+
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--texto-suave);
+
+    font-size: 13px;
+
+}
+
+.resumen-categoria strong {
+
+    color: var(--primario);
+
+    font-size: 16px;
+
+}
+
 
 .lista-header {
 
