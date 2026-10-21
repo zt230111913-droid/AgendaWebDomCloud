@@ -6,6 +6,13 @@ function e(string $texto): string
     return htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
 }
 
+function leerCampoTexto(string $nombre): string
+{
+    $valor = $_POST[$nombre] ?? '';
+
+    return is_string($valor) ? trim($valor) : '';
+}
+
 require_once __DIR__ . '/conexion.php';
 
 $categorias = $pdo->query(
@@ -22,11 +29,11 @@ $errores = [];
 
 // Recibe y valida los datos cuando se envía el formulario.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $titulo = trim($_POST['titulo'] ?? '');
-    $fecha = trim($_POST['fecha'] ?? '');
-    $categoriaId = trim($_POST['categoria_id'] ?? '');
-    $ubicacion = trim($_POST['ubicacion'] ?? '');
-    $hora = trim($_POST['hora'] ?? '');
+    $titulo = leerCampoTexto('titulo');
+    $fecha = leerCampoTexto('fecha');
+    $categoriaId = leerCampoTexto('categoria_id');
+    $ubicacion = leerCampoTexto('ubicacion');
+    $hora = leerCampoTexto('hora');
 
     if ($titulo === '') {
         $errores['titulo'] = 'Escribe un título.';
