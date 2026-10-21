@@ -632,6 +632,12 @@ function mostrarEvento(array $ev): string
     ================================= -->
 
     <section class="tarjeta lista-eventos">
+        <?php if (isset($_GET['ok']) && $_GET['ok'] === '1'): ?>
+            <div class="alert alert--ok" role="status">
+                Evento guardado correctamente.
+            </div>
+        <?php endif; ?>
+
         <div class="lista-header">
 
             <div>
