@@ -217,13 +217,22 @@ function mostrarEvento(array $ev): string
     $html .= '<td><div class="acciones">';
     $html .= '<a href="editar.php?id=' . $id . '" class="btn-editar">✎ Editar</a>';
     $html .= '<form action="borrar.php" method="POST" '
-        . 'onsubmit="return confirm(\'¿Seguro que deseas eliminar este evento?\');">';
+        . 'onsubmit="return confirm(\'¿Borrar este evento? No se puede deshacer.\');">';
     $html .= '<input type="hidden" name="id" value="' . $id . '">';
     $html .= '<button type="submit" class="btn-eliminar">♜ Eliminar</button>';
     $html .= '</form></div></td></tr>';
 
     return $html;
 }
+
+$avisos = [
+    '1' => 'Evento guardado correctamente.',
+    'editado' => 'Cambios guardados.',
+    'borrado' => 'Evento borrado.',
+];
+$claveAviso = $_GET['ok'] ?? '';
+$aviso = is_string($claveAviso) ? ($avisos[$claveAviso] ?? null) : null;
+$hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
 
 ?>
 
@@ -632,9 +641,14 @@ function mostrarEvento(array $ev): string
     ================================= -->
 
     <section class="tarjeta lista-eventos">
-        <?php if (isset($_GET['ok']) && $_GET['ok'] === '1'): ?>
+        <?php if ($aviso !== null): ?>
             <div class="alert alert--ok" role="status">
-                Evento guardado correctamente.
+                <?= e($aviso) ?>
+            </div>
+        <?php endif; ?>
+        <?php if ($hayError): ?>
+            <div class="alert alert--error" role="alert">
+                Ese evento no existe (quizá ya fue borrado).
             </div>
         <?php endif; ?>
 

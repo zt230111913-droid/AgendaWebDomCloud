@@ -1,36 +1,23 @@
 <?php
 
-require_once "conexion.php";
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-
-    header("Location: index.php");
-
+    header('Location: index.php');
     exit;
 }
 
-$id = isset($_POST['id'])
-    ? (int) $_POST['id']
-    : 0;
+$idRecibido = $_POST['id'] ?? 0;
+$id = is_scalar($idRecibido) ? (int) $idRecibido : 0;
 
-
-if ($id > 0) {
-
-    $stmt = $pdo->prepare("
-        DELETE FROM eventos
-        WHERE id = :id
-    ");
-
-    $stmt->execute([
-        ':id' => $id
-    ]);
+if ($id <= 0) {
+    header('Location: index.php?error=noexiste');
+    exit;
 }
 
+require_once 'conexion.php';
 
-header(
-    "Location: index.php"
-);
+$stmt = $pdo->prepare('DELETE FROM eventos WHERE id = :id');
+$stmt->execute([':id' => $id]);
+$borrado = $stmt->rowCount() === 1;
 
+header($borrado ? 'Location: index.php?ok=borrado' : 'Location: index.php?error=noexiste');
 exit;
-
-?>

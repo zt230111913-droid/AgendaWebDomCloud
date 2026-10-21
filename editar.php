@@ -2,20 +2,23 @@
 
 require_once "conexion.php";
 
+$leerCampo = static function (string $nombre): string {
+    $valor = $_POST[$nombre] ?? '';
+
+    return is_string($valor) ? trim($valor) : '';
+};
+
 $categorias = $pdo->query(
     'SELECT id, nombre FROM categorias ORDER BY nombre'
 )->fetchAll();
 $nombresCategorias = array_column($categorias, 'nombre', 'id');
 
-$id = isset($_GET['id'])
-    ? (int) $_GET['id']
-    : 0;
+$idRecibido = $_POST['id'] ?? $_GET['id'] ?? 0;
+$id = is_scalar($idRecibido) ? (int) $idRecibido : 0;
 
 
 if ($id <= 0) {
-
-    header("Location: index.php");
-
+    header('Location: index.php?error=noexiste');
     exit;
 }
 
@@ -41,14 +44,18 @@ $evento = $stmt->fetch(
 
 
 if (!$evento) {
-
-    header("Location: index.php");
+    header('Location: index.php?error=noexiste');
 
     exit;
 }
 
-
-$error = "";
+$titulo = $evento['titulo'];
+$ubicacion = $evento['ubicacion'] ?? '';
+$fecha = $evento['fecha'];
+$hora = $evento['hora'] ? substr($evento['hora'], 0, 5) : '';
+$categoriaId = (string) $evento['categoria_id'];
+$descripcion = $evento['descripcion'] ?? '';
+$errores = [];
 
 
 /*
@@ -56,53 +63,48 @@ $error = "";
  */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $titulo = $leerCampo('titulo');
+    $ubicacion = $leerCampo('ubicacion');
+    $fecha = $leerCampo('fecha');
+    $hora = $leerCampo('hora');
+    $categoriaId = $leerCampo('categoria_id');
+    $descripcion = $leerCampo('descripcion');
 
+    if ($titulo === '') {
+        $errores['titulo'] = 'El título es obligatorio.';
+    } elseif (mb_strlen($titulo) > 120) {
+        $errores['titulo'] = 'El título no puede superar 120 caracteres.';
+    }
 
-    $titulo = trim(
-        $_POST['titulo'] ?? ''
-    );
-
-
-    $ubicacion = trim(
-        $_POST['ubicacion'] ?? ''
-    );
-
-
-    $fecha = $_POST['fecha'] ?? '';
-
-
-    $hora = $_POST['hora'] ?? '';
-
-
-    $categoriaId = trim($_POST['categoria_id'] ?? '');
-
-
-    $descripcion = trim(
-        $_POST['descripcion'] ?? ''
-    );
-
+    $fechaValida = DateTime::createFromFormat('!Y-m-d', $fecha);
+    if (
+        $fecha === '' ||
+        $fechaValida === false ||
+        $fechaValida->format('Y-m-d') !== $fecha
+    ) {
+        $errores['fecha'] = 'Escribe una fecha válida.';
+    }
 
     $categoriasPermitidas = array_map('strval', array_column($categorias, 'id'));
+    if (!ctype_digit($categoriaId) || !in_array($categoriaId, $categoriasPermitidas, true)) {
+        $errores['categoria_id'] = 'Elige una categoría válida.';
+    }
 
-    if (
-        empty($titulo) ||
-        empty($fecha)
-    ) {
+    if ($hora !== '' && !preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/D', $hora)) {
+        $errores['hora'] = 'Escribe una hora válida.';
+    }
 
-        $error =
-            "El título y la fecha son obligatorios.";
+    if (mb_strlen($ubicacion) > 255) {
+        $errores['ubicacion'] = 'La ubicación no puede superar 255 caracteres.';
+    }
 
-    } elseif (
-        !ctype_digit($categoriaId) ||
-        !in_array($categoriaId, $categoriasPermitidas, true)
-    ) {
-        $error = "Elige una categoría válida.";
-    } else {
+    if (mb_strlen($descripcion) > 500) {
+        $errores['descripcion'] = 'La descripción no puede superar 500 caracteres.';
+    }
 
-
+    if ($errores === []) {
         $stmt = $pdo->prepare("
             UPDATE eventos
-
             SET
                 titulo = :titulo,
                 ubicacion = :ubicacion,
@@ -114,44 +116,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE id = :id
         ");
 
-
         $stmt->execute([
-
-            ':titulo' =>
-                $titulo,
-
-            ':ubicacion' =>
-                $ubicacion,
-
-            ':fecha' =>
-                $fecha,
-
-            ':hora' =>
-                $hora !== '' ? $hora : null,
-
-            ':categoria_id' =>
-                (int) $categoriaId,
-
-            ':descripcion' =>
-                $descripcion,
-
-            ':id' =>
-                $id
-
+            ':titulo' => $titulo,
+            ':ubicacion' => $ubicacion,
+            ':fecha' => $fecha,
+            ':hora' => $hora !== '' ? $hora : null,
+            ':categoria_id' => (int) $categoriaId,
+            ':descripcion' => $descripcion,
+            ':id' => $id,
         ]);
 
-
-        header(
-            "Location: index.php"
-        );
-
+        header('Location: index.php?ok=editado');
         exit;
     }
-
-
-    /*
-     * Mantener valores
-     */
 
     $evento['titulo'] = $titulo;
     $evento['ubicacion'] = $ubicacion;
@@ -294,25 +271,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <section class="tarjeta formulario">
 
-
-        <?php if (!empty($error)): ?>
-
-            <div class="mensaje-error">
-
-                <?php
-                echo htmlspecialchars($error);
-                ?>
-
+        <?php if ($errores !== []): ?>
+            <div class="alert alert--error" role="alert">
+                <?php foreach ($errores as $mensaje): ?>
+                    <p><?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') ?></p>
+                <?php endforeach; ?>
             </div>
-
         <?php endif; ?>
-
 
         <form
             method="POST"
             action=""
         >
-
+            <input type="hidden" name="id" value="<?= $id ?>">
 
             <div class="campo">
 
@@ -326,6 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="titulo"
                     value="<?php echo htmlspecialchars($evento['titulo']); ?>"
                     required
+                    maxlength="120"
                 >
 
             </div>
@@ -340,6 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <select
                     id="categoria"
                     name="categoria_id"
+                    required
                 >
                     <?php foreach ($categorias as $categoria): ?>
                         <option
@@ -384,7 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         type="time"
                         id="hora"
                         name="hora"
-                        value="<?php echo htmlspecialchars($evento['hora']); ?>"
+                            value="<?php echo htmlspecialchars($hora, ENT_QUOTES, 'UTF-8'); ?>"
                     >
 
                 </div>
@@ -404,6 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id="ubicacion"
                     name="ubicacion"
                     value="<?php echo htmlspecialchars($evento['ubicacion']); ?>"
+                    maxlength="255"
                 >
 
             </div>
@@ -419,6 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id="descripcion"
                     name="descripcion"
                     rows="5"
+                    maxlength="500"
                 ><?php echo htmlspecialchars($evento['descripcion']); ?></textarea>
 
             </div>
