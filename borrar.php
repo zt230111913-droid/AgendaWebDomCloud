@@ -13,7 +13,7 @@ if ($id <= 0) {
     exit;
 }
 
-require_once 'conexion.php';
+require_once __DIR__ . '/conexion.php';
 
 $stmt = $pdo->prepare('DELETE FROM eventos WHERE id = :id');
 $stmt->execute([':id' => $id]);

@@ -1,6 +1,6 @@
 <?php
 
-require_once "conexion.php";
+require_once __DIR__ . '/conexion.php';
 
 $leerCampo = static function (string $nombre): string {
     $valor = $_POST[$nombre] ?? '';
@@ -295,7 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     type="text"
                     id="titulo"
                     name="titulo"
-                    value="<?php echo htmlspecialchars($evento['titulo']); ?>"
+                    value="<?php echo htmlspecialchars($evento['titulo'], ENT_QUOTES, 'UTF-8'); ?>"
                     required
                     maxlength="120"
                 >
@@ -340,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         type="date"
                         id="fecha"
                         name="fecha"
-                        value="<?php echo htmlspecialchars($evento['fecha']); ?>"
+                        value="<?php echo htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?>"
                         required
                     >
 
@@ -376,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     type="text"
                     id="ubicacion"
                     name="ubicacion"
-                    value="<?php echo htmlspecialchars($evento['ubicacion']); ?>"
+                    value="<?php echo htmlspecialchars($evento['ubicacion'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                     maxlength="255"
                 >
 
@@ -394,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="descripcion"
                     rows="5"
                     maxlength="500"
-                ><?php echo htmlspecialchars($evento['descripcion']); ?></textarea>
+                ><?php echo htmlspecialchars($evento['descripcion'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
 
             </div>
 
