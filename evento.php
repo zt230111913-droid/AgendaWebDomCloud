@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/partes/sesion.php';
+$usuarioId = exigirSesion();
+
 require_once "conexion.php";
 $id = isset($_GET['id'])
     ? (int) $_GET['id']
@@ -16,12 +19,13 @@ $stmt = $pdo->prepare("
     SELECT e.*, c.nombre AS categoria
     FROM eventos AS e
     JOIN categorias AS c ON c.id = e.categoria_id
-    WHERE e.id = :id
+    WHERE e.id = :id AND e.usuario_id = :usuario_id
 ");
 
 
 $stmt->execute([
-    ':id' => $id
+    ':id' => $id,
+    ':usuario_id' => $usuarioId,
 ]);
 
 $evento = $stmt->fetch(
@@ -91,7 +95,7 @@ function claseCategoriaEvento($categoria)
 
     <link
         rel="stylesheet"
-        href="estilos.css"
+        href="css/estilos.css?v=8"
     >
 
 </head>
@@ -128,6 +132,9 @@ function claseCategoriaEvento($categoria)
                 <span>＋</span>
                 Nuevo evento
 
+            </a>
+            <a href="logout.php">
+                Cerrar sesión (<?php echo htmlspecialchars((string) ($_SESSION['nombre'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>)
             </a>
 
         </nav>

@@ -1,2 +1,3 @@
 # Credenciales locales o del alojamiento: nunca subirlas a GitHub.
+conexion.php
 conexion.local.php

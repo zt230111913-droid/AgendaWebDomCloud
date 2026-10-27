@@ -3,14 +3,19 @@ KIT DE ARRANQUE · AgendaWeb · Rescate P2-P3
 
 Esta carpeta va en:   tu carpeta de proyectos (ej. Documentos\agenda-web\)
 Para probarla:        en la terminal, DENTRO de agenda-web:  php -S localhost:8000
-Se abre en:           http://localhost:8000/registrar.php
+Primera visita:       http://localhost:8000/registro.php
 
 Archivos:
   registrar.php ........ formulario + procesamiento (TU trabajo: los TODO)
   index.php ............ página principal (ya está completa)
+  registro.php ......... crea cuentas personales
+  login.php ............ inicia sesión
+  logout.php ........... cierra sesión
+  partes/sesion.php .... guardia de rutas privadas
   conexion.php ......... conexión PDO a MySQL, configurada por variables de entorno
   db.sql ............... crea el esquema normalizado para una base nueva
   migracion_p5.sql ..... migra eventos existentes a categorias y categoria_id
+  migracion_p8.sql ..... agrega cuentas y propietario a los eventos existentes
   css/estilos.css ...... estilos listos: tú solo cambias el bloque MARCA
   .gitignore ........... recuerda no guardar contraseñas en el repositorio
 
@@ -30,6 +35,15 @@ tabla eventos existente. Si usas esa migración en otro servidor, ajusta su
 sentencia USE al nombre real de la base.
 La página principal lista eventos con JOIN y muestra el resumen por categoría
 con GROUP BY. Los formularios de registro y edición leen categorías de MySQL.
+
+P8 agrega cuentas personales. En una base ya existente, aplica migracion_p8.sql
+por partes en Workbench o phpMyAdmin: primero ejecuta solo la Fase 1 (respaldo,
+tabla usuarios y columna nullable); luego crea la primera cuenta en registro.php;
+por último, reemplaza el 1 de la Fase 2 por el id de esa cuenta y ejecuta el
+resto del SQL. Repite el proceso por separado en local y en DOM Cloud y ajusta
+USE agendaweb al nombre real de cada base. Cada página privada requiere sesión
+y consulta/edita eventos solo del usuario autenticado. Para una instalación
+nueva, db.sql crea las tablas usuarios y eventos con dueño.
 
 Sigue la guía de rescate paso a paso. Cada TODO dice en qué paso se completa.
 

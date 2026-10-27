@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/partes/sesion.php';
+$usuarioId = exigirSesion();
+
 require_once __DIR__ . '/conexion.php';
 
 $leerCampo = static function (string $nombre): string {
@@ -31,11 +34,12 @@ $stmt = $pdo->prepare("
     SELECT e.*, c.nombre AS categoria
     FROM eventos AS e
     JOIN categorias AS c ON c.id = e.categoria_id
-    WHERE e.id = :id
+    WHERE e.id = :id AND e.usuario_id = :usuario_id
 ");
 
 $stmt->execute([
-    ':id' => $id
+    ':id' => $id,
+    ':usuario_id' => $usuarioId,
 ]);
 
 $evento = $stmt->fetch(
@@ -113,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 categoria_id = :categoria_id,
                 descripcion = :descripcion
 
-            WHERE id = :id
+            WHERE id = :id AND usuario_id = :usuario_id
         ");
 
         $stmt->execute([
@@ -124,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':categoria_id' => (int) $categoriaId,
             ':descripcion' => $descripcion,
             ':id' => $id,
+            ':usuario_id' => $usuarioId,
         ]);
 
         header('Location: index.php?ok=editado');
@@ -226,7 +231,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>＋</span>
 
                 Nuevo evento
-
+            </a>
+            <a href="logout.php">
+                Cerrar sesión (<?= htmlspecialchars((string) ($_SESSION['nombre'] ?? ''), ENT_QUOTES, 'UTF-8') ?>)
             </a>
 
         </nav>

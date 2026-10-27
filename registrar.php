@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/partes/sesion.php';
+$usuarioId = exigirSesion();
+
 // Escapa texto antes de mostrarlo en HTML.
 function e(string $texto): string
 {
@@ -60,8 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($errores === []) {
         try {
             $consulta = $pdo->prepare(
-                'INSERT INTO eventos (titulo, ubicacion, fecha, hora, categoria_id)
-                VALUES (:titulo, :ubicacion, :fecha, :hora, :categoria_id)'
+                'INSERT INTO eventos
+                    (titulo, ubicacion, fecha, hora, categoria_id, usuario_id)
+                VALUES
+                    (:titulo, :ubicacion, :fecha, :hora, :categoria_id, :usuario_id)'
             );
             $consulta->execute([
                 ':titulo' => $titulo,
@@ -69,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':fecha' => $fecha,
                 ':hora' => $hora !== '' ? $hora : null,
                 ':categoria_id' => (int) $categoriaId,
+                ':usuario_id' => $usuarioId,
             ]);
             $consulta->closeCursor();
 
@@ -150,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         >
             ← Mis eventos
         </a>
+        <a href="logout.php" class="btn-secundario">Cerrar sesión</a>
 
     </header>
 

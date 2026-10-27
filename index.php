@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/partes/sesion.php';
+$usuarioId = exigirSesion();
+
 require_once "conexion.php";
 
 /*
@@ -93,24 +96,52 @@ $espaciosIniciales = $diaSemana - 1;
 /*
  * Obtener eventos
  */
-$stmt = $pdo->query("
+$stmt = $pdo->prepare("
     SELECT e.*, c.nombre AS categoria
     FROM eventos AS e
     JOIN categorias AS c ON c.id = e.categoria_id
+    WHERE e.usuario_id = :usuario_id
     ORDER BY e.fecha ASC, e.hora ASC
 ");
+$stmt->execute([':usuario_id' => $usuarioId]);
 
 $eventos = $stmt->fetchAll(
     PDO::FETCH_ASSOC
 );
 
-$resumenCategorias = $pdo->query("
+$buscarRecibido = $_GET['buscar'] ?? '';
+if (!is_string($buscarRecibido)) {
+    http_response_code(400);
+    exit('El término de búsqueda no es válido.');
+}
+$buscar = trim($buscarRecibido);
+$textoBusqueda = '%' . $buscar . '%';
+
+$stmt = $pdo->prepare("
+    SELECT e.*, c.nombre AS categoria
+    FROM eventos AS e
+    JOIN categorias AS c ON c.id = e.categoria_id
+    WHERE e.usuario_id = :usuario_id
+        AND e.titulo LIKE :buscar
+    ORDER BY e.fecha ASC, e.hora ASC
+");
+$stmt->execute([
+    ':usuario_id' => $usuarioId,
+    ':buscar' => $textoBusqueda,
+]);
+$eventosLista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = $pdo->prepare("
     SELECT c.id, c.nombre, COUNT(e.id) AS total
     FROM categorias AS c
-    LEFT JOIN eventos AS e ON e.categoria_id = c.id
+    LEFT JOIN eventos AS e
+        ON e.categoria_id = c.id
+        AND e.usuario_id = :usuario_id
     GROUP BY c.id, c.nombre
     ORDER BY c.nombre
-")->fetchAll();
+");
+$stmt->execute([':usuario_id' => $usuarioId]);
+$resumenCategorias = $stmt->fetchAll();
 
 
 /*
@@ -277,7 +308,7 @@ $hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
 
     <link
         rel="stylesheet"
-        href="css/estilos.css?v=7"
+        href="css/estilos.css?v=8"
     >
 
 </head>
@@ -327,6 +358,10 @@ $hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
             >
                 <span>＋</span>
                 Nuevo evento
+            </a>
+
+            <a href="logout.php">
+                Cerrar sesión (<?= e((string) ($_SESSION['nombre'] ?? '')) ?>)
             </a>
 
         </nav>
@@ -665,16 +700,38 @@ $hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
 
             <span class="contador-eventos">
 
-                <?php echo count($eventos); ?>
+                <?php echo count($eventosLista); ?>
 
-                evento<?php echo count($eventos) != 1 ? 's' : ''; ?>
+                evento<?php echo count($eventosLista) != 1 ? 's' : ''; ?>
 
             </span>
 
         </div>
 
+        <form class="busqueda-eventos" method="get" action="index.php">
+            <label class="sr-only" for="buscar">Buscar eventos por título</label>
+            <input
+                class="form-input"
+                type="search"
+                id="buscar"
+                name="buscar"
+                value="<?= e($buscar) ?>"
+                placeholder="Buscar evento..."
+            >
+            <button type="submit" class="btn-primary">Buscar</button>
+            <?php if ($buscar !== ''): ?>
+                <a class="btn-secundario" href="index.php">Limpiar</a>
+            <?php endif; ?>
+        </form>
 
-        <?php if (empty($eventos)): ?>
+        <?php if (empty($eventosLista) && $buscar !== ''): ?>
+
+            <div class="sin-eventos">
+                <h3>Sin resultados para tu búsqueda</h3>
+                <p>No encontramos eventos cuyo título coincida con “<?= e($buscar) ?>”.</p>
+            </div>
+
+        <?php elseif (empty($eventosLista)): ?>
 
 
             <div class="sin-eventos">
@@ -744,7 +801,7 @@ $hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
                     <tbody>
 
 
-                    <?php foreach ($eventos as $evento): ?>
+                    <?php foreach ($eventosLista as $evento): ?>
                         <?= mostrarEvento($evento) ?>
                     <?php endforeach; ?>
 
