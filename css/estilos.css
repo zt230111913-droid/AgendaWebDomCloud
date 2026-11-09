@@ -931,6 +931,8 @@ textarea {
 
     display: flex;
 
+    flex-wrap: wrap;
+
     align-items: center;
 
     gap: 10px;
@@ -943,9 +945,17 @@ textarea {
 
 .busqueda-eventos .form-input {
 
-    flex: 1;
+    flex: 1 1 220px;
 
     min-width: 0;
+
+}
+
+.busqueda-eventos .form-select {
+
+    flex: 0 1 210px;
+
+    width: auto;
 
 }
 

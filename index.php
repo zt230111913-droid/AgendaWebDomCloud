@@ -5,6 +5,27 @@ $usuarioId = exigirSesion();
 
 require_once "conexion.php";
 
+$categorias = $pdo->query(
+    'SELECT id, nombre FROM categorias ORDER BY nombre'
+)->fetchAll();
+
+$qRecibida = $_GET['q'] ?? '';
+if (!is_string($qRecibida)) {
+    http_response_code(400);
+    exit('El término de búsqueda no es válido.');
+}
+$q = mb_substr(trim($qRecibida), 0, 60);
+
+$categoriaRecibida = $_GET['categoria'] ?? '0';
+$categoriaId = is_string($categoriaRecibida) && ctype_digit($categoriaRecibida)
+    ? (int) $categoriaRecibida
+    : 0;
+$idsValidos = array_map('intval', array_column($categorias, 'id'));
+if (!in_array($categoriaId, $idsValidos, true)) {
+    $categoriaId = 0;
+}
+$buscando = $q !== '' || $categoriaId !== 0;
+
 /*
  * Mes y año actuales
  */
@@ -109,26 +130,30 @@ $eventos = $stmt->fetchAll(
     PDO::FETCH_ASSOC
 );
 
-$buscarRecibido = $_GET['buscar'] ?? '';
-if (!is_string($buscarRecibido)) {
-    http_response_code(400);
-    exit('El término de búsqueda no es válido.');
-}
-$buscar = trim($buscarRecibido);
-$textoBusqueda = '%' . $buscar . '%';
+$condiciones = ['e.usuario_id = :usuario_id'];
+$parametros = [':usuario_id' => $usuarioId];
 
-$stmt = $pdo->prepare("
+if ($q !== '') {
+    $patron = '%' . addcslashes($q, '%_\\') . '%';
+    $condiciones[] = '(e.titulo LIKE :titulo OR e.descripcion LIKE :descripcion)';
+    $parametros[':titulo'] = $patron;
+    $parametros[':descripcion'] = $patron;
+}
+
+if ($categoriaId !== 0) {
+    $condiciones[] = 'e.categoria_id = :categoria_id';
+    $parametros[':categoria_id'] = $categoriaId;
+}
+
+$sqlEventosLista = '
     SELECT e.*, c.nombre AS categoria
     FROM eventos AS e
     JOIN categorias AS c ON c.id = e.categoria_id
-    WHERE e.usuario_id = :usuario_id
-        AND e.titulo LIKE :buscar
+    WHERE ' . implode(' AND ', $condiciones) . '
     ORDER BY e.fecha ASC, e.hora ASC
-");
-$stmt->execute([
-    ':usuario_id' => $usuarioId,
-    ':buscar' => $textoBusqueda,
-]);
+';
+$stmt = $pdo->prepare($sqlEventosLista);
+$stmt->execute($parametros);
 $eventosLista = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmt = $pdo->prepare("
@@ -308,7 +333,7 @@ $hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
 
     <link
         rel="stylesheet"
-        href="css/estilos.css?v=8"
+        href="css/estilos.css?v=9"
     >
 
 </head>
@@ -699,36 +724,51 @@ $hayError = isset($_GET['error']) && $_GET['error'] === 'noexiste';
 
 
             <span class="contador-eventos">
-
-                <?php echo count($eventosLista); ?>
-
-                evento<?php echo count($eventosLista) != 1 ? 's' : ''; ?>
-
+                <?php if ($buscando): ?>
+                    <?= count($eventosLista) ?> resultado<?= count($eventosLista) === 1 ? '' : 's' ?>
+                    <?= $q !== '' ? 'para «' . e($q) . '»' : '' ?>
+                <?php else: ?>
+                    <?= count($eventosLista) ?> evento<?= count($eventosLista) === 1 ? '' : 's' ?> registrados
+                <?php endif; ?>
             </span>
 
         </div>
 
-        <form class="busqueda-eventos" method="get" action="index.php">
-            <label class="sr-only" for="buscar">Buscar eventos por título</label>
+        <form class="busqueda-eventos" method="get" action="index.php" role="search">
+            <label class="sr-only" for="q">Buscar eventos en título o descripción</label>
             <input
                 class="form-input"
                 type="search"
-                id="buscar"
-                name="buscar"
-                value="<?= e($buscar) ?>"
-                placeholder="Buscar evento..."
+                id="q"
+                name="q"
+                value="<?= e($q) ?>"
+                maxlength="60"
+                placeholder="Buscar en título o descripción..."
             >
+            <label class="sr-only" for="categoria">Filtrar por categoría</label>
+            <select class="form-select" id="categoria" name="categoria">
+                <option value="0">Todas las categorías</option>
+                <?php foreach ($categorias as $categoria): ?>
+                    <option
+                        value="<?= (int) $categoria['id'] ?>"
+                        <?= $categoriaId === (int) $categoria['id'] ? 'selected' : '' ?>
+                    >
+                        <?= e($categoria['nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
             <button type="submit" class="btn-primary">Buscar</button>
-            <?php if ($buscar !== ''): ?>
+            <?php if ($buscando): ?>
                 <a class="btn-secundario" href="index.php">Limpiar</a>
             <?php endif; ?>
         </form>
 
-        <?php if (empty($eventosLista) && $buscar !== ''): ?>
+        <?php if (empty($eventosLista) && $buscando): ?>
 
             <div class="sin-eventos">
                 <h3>Sin resultados para tu búsqueda</h3>
-                <p>No encontramos eventos cuyo título coincida con “<?= e($buscar) ?>”.</p>
+                <p>No encontramos eventos que coincidan con los filtros seleccionados.</p>
+                <a class="btn-secundario" href="index.php">Ver todos mis eventos</a>
             </div>
 
         <?php elseif (empty($eventosLista)): ?>
