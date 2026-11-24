@@ -43,20 +43,6 @@ if (is_string($categoriaRecibida) && ctype_digit($categoriaRecibida)) {
     $categoriaId = $categoriaRecibida;
 }
 
-if ($categoriaId > 0) {
-    try {
-        $consultaCategoria = $pdo->prepare('SELECT id FROM categorias WHERE id = :id LIMIT 1');
-        $consultaCategoria->execute([':id' => $categoriaId]);
-
-        if (!$consultaCategoria->fetch()) {
-            $categoriaId = 0;
-        }
-    } catch (PDOException $e) {
-        error_log('No se pudo validar la categoría para la API: ' . $e->getMessage());
-        responder(500, ['error' => 'No se pudo consultar tus eventos.']);
-    }
-}
-
 $condiciones = ['e.usuario_id = :usuario_id'];
 $parametros = [':usuario_id' => $usuarioId];
 
@@ -91,6 +77,11 @@ try {
     error_log('No se pudo consultar los eventos: ' . $e->getMessage());
     responder(500, ['error' => 'No se pudo consultar tus eventos.']);
 }
+
+foreach ($eventos as &$evento) {
+    $evento['id'] = (int) $evento['id'];
+}
+unset($evento);
 
 responder(200, [
     'usuario' => $_SESSION['nombre'] ?? '',
